@@ -58,9 +58,3 @@ A simple Android application demonstrating user authentication (registration, lo
 5.  Download the `google-services.json` file from your Firebase project settings and place it in the `app/` directory of the project.
 6.  In the Firebase Console, navigate to **Authentication > Sign-in method** and enable the **"Email/Password"** provider.
 7.  Sync the Gradle project and run the application.
-
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/eb6dca05-cbc8-414b-9ed4-d2c68598db64" alt="" width="45%">
-  <img src="https://github.com/user-attachments/assets/bd30d21d-da68-429f-b338-9a2952b31f26" alt="" width="45%">
-</p>
