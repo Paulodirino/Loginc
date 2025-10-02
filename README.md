@@ -59,5 +59,8 @@ A simple Android application demonstrating user authentication (registration, lo
 6.  In the Firebase Console, navigate to **Authentication > Sign-in method** and enable the **"Email/Password"** provider.
 7.  Sync the Gradle project and run the application.
 
-  ![log2](https://github.com/user-attachments/assets/bd30d21d-da68-429f-b338-9a2952b31f26)
-![log1](https://github.com/user-attachments/assets/eb6dca05-cbc8-414b-9ed4-d2c68598db64)
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/bd30d21d-da68-429f-b338-9a2952b31f26" alt="" width="45%">
+  <img src="https://github.com/user-attachments/assets/eb6dca05-cbc8-414b-9ed4-d2c68598db64" alt="" width="45%">
+</p>
