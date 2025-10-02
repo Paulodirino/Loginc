@@ -61,6 +61,6 @@ A simple Android application demonstrating user authentication (registration, lo
 
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/bd30d21d-da68-429f-b338-9a2952b31f26" alt="" width="45%">
   <img src="https://github.com/user-attachments/assets/eb6dca05-cbc8-414b-9ed4-d2c68598db64" alt="" width="45%">
+  <img src="https://github.com/user-attachments/assets/bd30d21d-da68-429f-b338-9a2952b31f26" alt="" width="45%">
 </p>
