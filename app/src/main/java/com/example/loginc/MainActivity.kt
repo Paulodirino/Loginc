@@ -1,104 +1,94 @@
-package com.example.loginc
+package com.example.loginc // <-- Verifique se seu pacote está correto
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.loginc.databinding.ActivityMainBinding
-import com.google.firebase.FirebaseApp
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
     private lateinit var auth: FirebaseAuth
+
+    // Declarações dos layouts e da barra de progresso
+    private lateinit var loginLayout: ConstraintLayout
+    private lateinit var profileLayout: ConstraintLayout
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-        // Inicializa o Firebase
-        FirebaseApp.initializeApp(this)
         auth = Firebase.auth
 
-        // Configura o View Binding
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        // Referências aos layouts principais e à barra de progresso
+        loginLayout = findViewById(R.id.loginLayout)
+        profileLayout = findViewById(R.id.profileLayout)
+        progressBar = findViewById(R.id.progress_bar)
 
-        // Configura os listeners dos botões
-        setupButtonClickListeners()
-
-        // Atualiza a UI com base no estado de login
+        // Verifica o estado do login quando a tela é criada
         updateUI()
-    }
 
-    private fun setupButtonClickListeners() {
-        // Botão de Registro
-        binding.registerButton.setOnClickListener {
-            val email = binding.emailEditText.text.toString()
-            val password = binding.passwordEditText.text.toString()
+        // --- Configuração dos botões e campos da tela de LOGIN ---
+        val etEmail = findViewById<EditText>(R.id.et_email)
+        val etPassword = findViewById<EditText>(R.id.et_password)
+        val btnLogin = findViewById<Button>(R.id.btn_login)
 
-            if (email.isBlank() || password.isBlank()) {
-                binding.messageTextView.text = "E-mail e senha são obrigatórios."
+        btnLogin.setOnClickListener {
+            val email = etEmail.text.toString().trim()
+            val password = etPassword.text.toString().trim()
+
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Preencha e-mail e senha.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        Log.d("AUTH", "createUserWithEmail:success")
-                        binding.messageTextView.text = "Registro bem-sucedido! Faça o login."
-                    } else {
-                        Log.w("AUTH", "createUserWithEmail:failure", task.exception)
-                        binding.messageTextView.text = "Falha no registro: ${task.exception?.message}"
-                    }
-                }
-        }
-
-        // Botão de Login
-        binding.loginButton.setOnClickListener {
-            val email = binding.emailEditText.text.toString()
-            val password = binding.passwordEditText.text.toString()
-
-            if (email.isBlank() || password.isBlank()) {
-                binding.messageTextView.text = "E-mail e senha são obrigatórios."
-                return@setOnClickListener
-            }
-
+            progressBar.visibility = View.VISIBLE
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
+                    progressBar.visibility = View.GONE
                     if (task.isSuccessful) {
-                        Log.d("AUTH", "signInWithEmail:success")
-                        updateUI() // Atualiza a UI para mostrar a tela de perfil
+                        Toast.makeText(this, "Login bem-sucedido!", Toast.LENGTH_SHORT).show()
+                        updateUI() // Atualiza a tela para mostrar o perfil
                     } else {
-                        Log.w("AUTH", "signInWithEmail:failure", task.exception)
-                        binding.messageTextView.text = "Falha no login: ${task.exception?.message}"
+                        Toast.makeText(this, "Falha no login: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                     }
                 }
         }
 
-        // Botão de Logout
-        binding.logoutButton.setOnClickListener {
+        // --- Configuração dos botões e campos da tela de PERFIL (LOGADO) ---
+        val btnLogout = profileLayout.findViewById<Button>(R.id.btn_logout)
+
+        btnLogout.setOnClickListener {
             auth.signOut()
-            updateUI() // Atualiza a UI para mostrar a tela de login
+            Toast.makeText(this, "Você foi desconectado.", Toast.LENGTH_SHORT).show()
+            updateUI() // Atualiza a tela para mostrar o login novamente
         }
     }
 
     private fun updateUI() {
-        val currentUser = auth.currentUser
-        if (currentUser != null) {
-            // Usuário está logado: mostra a tela de perfil
-            binding.loginLayout.visibility = View.GONE
-            binding.profileLayout.visibility = View.VISIBLE
-            binding.welcomeTextView.text = "Bem-vindo, ${currentUser.email}!"
+        val user = auth.currentUser
+        if (user != null) {
+            // USUÁRIO ESTÁ LOGADO
+            // Esconde a tela de login e mostra a tela de perfil
+            loginLayout.visibility = View.GONE
+            profileLayout.visibility = View.VISIBLE
+
+            // Atualiza as informações na tela de perfil
+            val tvUserEmail = profileLayout.findViewById<TextView>(R.id.tv_user_email)
+            tvUserEmail.text = user.email
         } else {
-            // Usuário não está logado: mostra a tela de login
-            binding.loginLayout.visibility = View.VISIBLE
-            binding.profileLayout.visibility = View.GONE
-            binding.messageTextView.text = "" // Limpa a mensagem de erro/sucesso
-            binding.emailEditText.text.clear()
-            binding.passwordEditText.text.clear()
+            // USUÁRIO NÃO ESTÁ LOGADO
+            // Mostra a tela de login e esconde a tela de perfil
+            loginLayout.visibility = View.VISIBLE
+            profileLayout.visibility = View.GONE
         }
     }
 }
